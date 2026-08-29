@@ -1,0 +1,8 @@
+# Dependencies
+front-end/node_modules/
+
+# Build output
+front-end/dist/
+
+# Cloudflare Wrangler
+front-end/.wrangler/
