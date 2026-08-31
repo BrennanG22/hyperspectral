@@ -161,17 +161,17 @@ export default function HyperspectralApp() {
                   onChange={(v) => {
                     setSelectedQualityOption(v)
                   }}
-                  placeholder={`Select... ${selectedCollection() == ""? "" : `(Default: ${qualityOptions()[qualityOption()]})`}`}
+                  placeholder={`Select... ${selectedCollection() == "" ? "" : `(Default: ${qualityOptions()[qualityOption()]})`}`}
                   disabled={selectedCollection() == ""}
                 />
 
                 <p class="mt-2 text-sm text-gray-500">
-                  Higher resolutions may require longer processing times.
+                  Higher resolutions require longer processing times.
                 </p>
               </Field>
 
               <p class="text-sm text-gray-500">
-                Tip: Hold <kbd class="rounded border px-1.5 py-0.5 text-xs">Shift</kbd> and drag on the image to select a<br/> specific area of the image to process.
+                Tip: Hold <kbd class="rounded border px-1.5 py-0.5 text-xs">Shift</kbd> and drag on the image to select a<br /> specific area of the image to process.
               </p>
 
             </div>
@@ -206,59 +206,211 @@ export default function HyperspectralApp() {
             number="03"
             title="Expression"
             description="Define an index expression"
-            helpText={
-              <>
-                <p>
-                  Define the expression used to calculate the value for each pixel.
-                  Expressions can reference image bands (b0, b1, b2, etc) or mathematical operators ( +, -, *, /, ^, () ).
-                </p>
 
-                <p>
-                  For single-channel processing, the expression determines the index
-                  value. For RGB processing, provide a separate expression for the
-                  red, green, and blue channels.
-                </p>
-
-                <p>
-                  Make sure your expression is valid before running the analysis.
-                  <Switch>
-                    <Match when={selectedProcessingMode() == "SC"}>
-                      <span>
-                        {" "}Click{" "}
-                        <button
-                          type="button"
-                          class="text-[#4a90ff] underline underline-offset-2 hover:text-[#7aaeff]"
-                          onClick={() => {
-                            setSCExpression("(b22 - b11) / (b22 + b11)");
-                          }}
-                        >
-                          here
-                        </button>{" "}
-                        to load an example NDVI expression into the equation box.
-                      </span>
-                    </Match>
-                    <Match when={selectedProcessingMode() == "RGB"}>
-                      <span>
-                        {" "}Click{" "}
-                        <button
-                          type="button"
-                          class="text-[#4a90ff] underline underline-offset-2 hover:text-[#7aaeff]"
-                          onClick={() => {
-                            setRedExpression("b22");
-                            setGreenExpression("b7");
-                            setBlueExpression("b0")
-                          }}
-                        >
-                          here
-                        </button>{" "}
-                        to load an inferad exagerated expression into the equation box.
-                      </span>
-                    </Match>
-                  </Switch>
-                </p>
-              </>
-            }
           >
+            <div class="flex gap-2">
+
+              <div class="relative mt-1.5 pb-2 group">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (selectedProcessingMode() === "SC") {
+                      setSCExpression("(b22 - b11)/(b22 + b11)")
+                    } else if (selectedProcessingMode() === "RGB") {
+                      setRedExpression("b22");
+                      setGreenExpression("b7");
+                      setBlueExpression("b0");
+                    }
+                  }}
+                  class="
+        inline-flex items-center gap-1.5
+        rounded-full
+        border border-[#2a3f6b]
+        bg-[#132038]
+        px-2.5 py-1
+        text-[9px] font-medium uppercase tracking-[0.08em]
+        text-[#7aaeff]
+        cursor-pointer
+        transition-all duration-150 ease-out
+        hover:border-[#4a90ff]
+        hover:bg-[#1a2c4d]
+        hover:text-[#a8c8ff]
+        hover:shadow-[0_0_12px_rgba(74,144,255,0.12)]
+        active:scale-[0.98]
+        focus:outline-none
+        focus-visible:ring-1
+        focus-visible:ring-[#4a90ff]
+      "
+                >
+                  <span
+                    aria-hidden="true"
+                    class="
+          flex h-3 w-3 shrink-0
+          items-center justify-center
+          rounded-full
+          border border-current
+          text-[8px] leading-none
+        "
+                  >
+                    !
+                  </span>
+
+                  Example
+                </button>
+
+                <div
+                  class="
+        pointer-events-none
+        absolute left-0 top-[calc(100%+6px)]
+        z-50 w-80
+        origin-top-left
+        rounded-lg
+        border border-[#2a3039]
+        bg-[#0d1117]
+        p-4
+        shadow-[0_16px_40px_rgba(0,0,0,0.5)]
+        opacity-0
+        invisible
+        translate-y-1
+        scale-[0.98]
+        transition-all duration-150 ease-out
+
+        group-hover:pointer-events-auto
+        group-hover:visible
+        group-hover:translate-y-0
+        group-hover:scale-100
+        group-hover:opacity-100
+      "
+                >
+                  <div class="mb-2 flex items-center gap-2">
+                    <span class="h-1.5 w-1.5 rounded-full bg-yellow-300" />
+                    <span class="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#697382]">
+                      Expression example
+                    </span>
+                  </div>
+
+                  <div class="space-y-3 text-[11px] leading-relaxed text-[#8d98a7]">
+                    <p>
+                      Click the example button to fill in a sample expression.
+                    </p>
+
+                    <Switch>
+                      <Match when={selectedProcessingMode() == "SC"}>
+                        <span>
+                          The loaded expression will be an NDVI expression.
+                          The formula for the index is (NIR-RED)/(NIR+RED), and is used for indexing vegitation.
+                        </span>
+                      </Match>
+
+                      <Match when={selectedProcessingMode() == "RGB"}>
+                        <span>
+                          The loaded expression will be an infrared exaggerated expression.
+                          This is accomplished by setting the blue and green channels to their
+                          respective colours, and setting the red channel to a band in the
+                          infrared spectrum, in this case 799nm.
+                        </span>
+                      </Match>
+                    </Switch>
+
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="relative mt-1.5 pb-2 group">
+                <button
+                  type="button"
+                  class="
+        inline-flex items-center gap-1.5
+        rounded-full
+        border border-[#2a3f6b]
+        bg-[#132038]
+        px-2.5 py-1
+        text-[9px] font-medium uppercase tracking-[0.08em]
+        text-[#7aaeff]
+        cursor-help
+        transition-all duration-150 ease-out
+        hover:border-[#4a90ff]
+        hover:bg-[#1a2c4d]
+        hover:text-[#a8c8ff]
+        hover:shadow-[0_0_12px_rgba(74,144,255,0.12)]
+        active:scale-[0.98]
+        focus:outline-none
+        focus-visible:ring-1
+        focus-visible:ring-[#4a90ff]
+      "
+                >
+                  <span
+                    aria-hidden="true"
+                    class="
+          flex h-3 w-3 shrink-0
+          items-center justify-center
+          rounded-full
+          border border-current
+          text-[8px] leading-none
+        "
+                  >
+                    ?
+                  </span>
+
+                  Expression help
+                </button>
+
+                <div
+                  class="
+        pointer-events-none
+        absolute left-0 top-[calc(100%+6px)]
+        z-50 w-80
+        origin-top-left
+        rounded-lg
+        border border-[#2a3039]
+        bg-[#0d1117]
+        p-4
+        shadow-[0_16px_40px_rgba(0,0,0,0.5)]
+        opacity-0
+        invisible
+        translate-y-1
+        scale-[0.98]
+        transition-all duration-150 ease-out
+
+        group-hover:pointer-events-auto
+        group-hover:visible
+        group-hover:translate-y-0
+        group-hover:scale-100
+        group-hover:opacity-100
+      "
+                >
+                  <div class="mb-2 flex items-center gap-2">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#4a90ff]" />
+                    <span class="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#697382]">
+                      Expression help
+                    </span>
+                  </div>
+
+                  <div class="space-y-3 text-[11px] leading-relaxed text-[#8d98a7]">
+                    <p>
+                      Define the expression used to calculate the value for each pixel.
+                      Expressions can reference image bands (b0, b1, b2, etc.) or mathematical
+                      operators such as +, -, *, /, ^, and ().
+                    </p>
+
+                    <p>
+                      For single-channel processing, the expression determines the index
+                      value. For RGB processing, provide a separate expression for the
+                      red, green, and blue channels.
+                    </p>
+
+                    <p>
+                      Make sure your expression is valid before running the analysis.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+
             {loadedTiffMetaData() && (
               <div class="mt-2 border-t border-[#1c2128] pt-4 pb-4">
                 <p class="text-[10px] font-medium uppercase tracking-[0.13em] text-[#697382]">
@@ -356,8 +508,8 @@ export default function HyperspectralApp() {
             Processing may take several seconds
           </p>
         </section>
-      </aside>
-    </div>)
+      </aside >
+    </div >)
 }
 
 function StepSection(props: {
@@ -376,7 +528,6 @@ function StepSection(props: {
     >
       <div class="grid grid-cols-[18px_1fr] gap-x-3">
 
-        {/* Gutter: dot + connector line, isolated from content */}
         <div class="relative flex justify-center">
           <span
             class="mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full font-mono text-[9px] transition-colors"
@@ -389,93 +540,32 @@ function StepSection(props: {
             {props.status === "complete" ? "✓" : props.number}
           </span>
 
-          {!props.isLast && (
-            <span
-              aria-hidden="true"
-              class="absolute left-1/2 top-[20px] bottom-[-24px] w-px -translate-x-1/2"
-              classList={{
-                "bg-[#1c5c33]": props.status === "complete",
-                "bg-[#232830]": props.status !== "complete",
-              }}
-            />
-          )}
+          <span
+            aria-hidden="true"
+            class="absolute left-1/2 top-[20px] bottom-[-24px] w-px -translate-x-1/2"
+            classList={{
+              "bg-[#1c5c33]": props.status === "complete",
+              "bg-[#232830]": props.status !== "complete",
+            }}
+          />
+
         </div>
 
-        {/* Content: title, description/help, and step body */}
         <div>
           <h2 class="text-xs font-semibold uppercase tracking-[0.14em] text-[#d5dae1]">
             {props.title}
           </h2>
 
-          {props.helpText ? (
-            <div class="group relative mt-1.5 inline-block">
-              <p class="text-[10px] leading-relaxed text-[#535d6a]">
-                {props.description}
-              </p>
-
-              <span
-                class="
-                  mt-1.5 inline-flex cursor-help items-center gap-1.5
-                  rounded-full border border-[#2a3f6b] bg-[#132038] px-2.5 py-1
-                  text-[9px] font-medium uppercase tracking-[0.08em] text-[#7aaeff]
-                  transition-colors
-                  group-hover:border-[#4a90ff] group-hover:bg-[#1a2c4d] group-hover:text-[#a8c8ff]
-                "
-              >
-                <span
-                  aria-hidden="true"
-                  class="
-                    flex h-3 w-3 shrink-0 items-center justify-center rounded-full
-                    border border-current text-[8px] leading-none
-                  "
-                >
-                  ?
-                </span>
-                Hover for help
-              </span>
-
-              <div
-                class="
-    absolute left-0 top-[calc(100%+6px)] z-50
-    w-80
-    rounded-lg border border-[#2a3039]
-    bg-[#0d1117]
-    p-4
-    shadow-[0_16px_40px_rgba(0,0,0,0.5)]
-    opacity-0
-    translate-y-1
-    invisible
-    transition-all duration-150
-
-    group-hover:visible
-    group-hover:translate-y-0
-    group-hover:opacity-100
-  "
-              >
-                <div class="mb-2 flex items-center gap-2">
-                  <span class="h-1.5 w-1.5 rounded-full bg-[#4a90ff]" />
-                  <span class="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#697382]">
-                    Expression help
-                  </span>
-                </div>
-
-                <div class="space-y-3 text-[11px] leading-relaxed text-[#8d98a7]">
-                  {props.helpText}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <p class="mt-1 text-[10px] leading-relaxed text-[#535d6a]">
-              {props.description}
-            </p>
-          )}
+          <p class="mt-1 text-[10px] leading-relaxed text-[#535d6a]">
+            {props.description}
+          </p>
 
           <div class="mt-5">
             {props.children}
           </div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }
 
@@ -509,8 +599,6 @@ function SectionHeader(props: {
             <p class="inline-block cursor-help text-[10px] leading-relaxed text-[#535d6a] transition-colors group-hover:text-[#8b96a5]">
               {props.description}
             </p>
-
-            {/* Help popup */}
 
             <div
               class="
