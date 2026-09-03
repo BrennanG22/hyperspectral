@@ -223,7 +223,7 @@ export class TiffImageManager {
 		await this.gpuReady;
 
 		if (!this.device) {
-			throw new Error("WebGPU device is not available.");
+			throw new Error("WebGPU device is not available. Please try enabling Graphics Acceleration in your browser settings.");
 		}
 
 		if (!this.tiffMetaData) {
@@ -331,7 +331,7 @@ export class TiffImageManager {
 		await this.gpuReady;
 
 		if (!this.device) {
-			throw new Error("WebGPU device is not available.");
+			throw new Error("WebGPU device is not available. Please try enabling Graphics Acceleration in your browser settings.");
 		}
 
 		if (!this.tiffMetaData) {

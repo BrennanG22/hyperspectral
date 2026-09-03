@@ -57,7 +57,7 @@ const TiffImageWrapper: Component<Props> = (props) => {
         } else {
             console.error("Unknown TIFF error:", err);
         }
-        return "We couldn't load the image. Please try again.";
+        return "The image could not load. Please try again.";
     }
 
     function canvasToImageFraction(x: number, y: number) {
@@ -377,7 +377,7 @@ const TiffImageWrapper: Component<Props> = (props) => {
             props.metaDataSetter(null);
 
             setError({
-                message: "We couldn't load this image. Please try again.",
+                message: "The image could not load. Please try again.",
                 retry: async () => {
                     await loadCollection(collectionID);
                 },
